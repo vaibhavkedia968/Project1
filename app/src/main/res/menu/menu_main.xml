@@ -6,17 +6,18 @@
         android:id="@+id/myprofile"
         android:title="My Profile"
         />
-    <item
-        android:id="@+id/settings"
-        android:title="@string/action_settings"
-        />
+
     <item
         android:id="@+id/about"
         android:title="About"
         />
     <item
+        android:id="@+id/signout"
+        android:title="Sign out"
+        />
+    <item
         android:id="@+id/contact"
-        android:title="Contact Us"
+        android:title="Contact us"
         />
     <item
         android:id="@+id/exit"

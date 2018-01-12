@@ -4,20 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.example.vaibhav.project1.MainActivity"
     tools:showIn="@layout/activity_main">
 
-
-
-
-    <Spinner
-        android:id="@+id/level"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/category"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="203dp" />
 
     <Spinner
         android:id="@+id/category"
@@ -32,9 +23,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Continue"
-        android:layout_marginEnd="12dp"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginBottom="29dp"
-        android:enabled="false" />
+        android:enabled="false"
+        android:layout_below="@+id/category"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="186dp" />
 </RelativeLayout>

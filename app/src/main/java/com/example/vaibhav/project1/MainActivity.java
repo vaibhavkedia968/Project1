@@ -12,202 +12,60 @@ import android.view.MenuItem;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
-    Spinner category,level;
-    Button go;
-    boolean cat,lvl;
-    int timelimit=60;
-    String[] c={"Select your category","Aptitude","Science","Current Affairs","Riddles"};
-    String[] l={"Select your level","Easy","Medium","Hard"};
+
+    Button log, reg;
+    EditText email, pass;
+
+    //String[] c={"Select your category","Aptitude","Science","Current Affairs","Riddles"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        category=(Spinner)findViewById(R.id.category);
-        level=(Spinner)findViewById(R.id.level);
-        go=(Button)findViewById(R.id.cont);
-        loadCategory();
-        loadLevel();
-        category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position > 0)
-                {
-                    cat = true;
-                        Toast.makeText(parent.getContext(), "You selected: " + c[position], Toast.LENGTH_LONG).show();
-                }
-                else
-                    cat = false;
-                if (cat && lvl)
-                    go.setEnabled(true);
-                else
-                    go.setEnabled(false);
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-        level.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position > 0)
-                {
-                    lvl = true;
-                    Toast.makeText(parent.getContext(), "You selected: " + l[position], Toast.LENGTH_LONG).show();
-                }
-                else
-                    lvl = false;
-                if (cat && lvl)
-                    go.setEnabled(true);
-                else
-                    go.setEnabled(false);
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-        go.setOnClickListener(new View.OnClickListener() {
+        log = (Button) findViewById(R.id.login);
+        reg = (Button) findViewById(R.id.register);
+        email = (EditText) findViewById(R.id.email);
+        pass = (EditText) findViewById(R.id.pass);
+        reg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cont();
+                Intent i = new Intent(MainActivity.this, Register.class);
+                startActivity(i);
+                // finish();
             }
         });
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
+        log.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String e = email.getText().toString();
+                String p = pass.getText().toString();
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        switch(id)
-        {
-            case R.id.myprofile:
-                Toast.makeText(getApplication(),"My Profile",Toast.LENGTH_SHORT).show();
-                break;
-
-            case R.id.settings:
-                Toast.makeText(getApplication(),"Settings",Toast.LENGTH_SHORT).show();
-                break;
-
-            case R.id.about:
-                Toast.makeText(getApplication(),"About",Toast.LENGTH_SHORT).show();
-                Intent i=new Intent(MainActivity.this,AboutActivity.class);
-                startActivity(i);
-                break;
-
-            case R.id.contact:
-                Toast.makeText(getApplication(),"Contact Us",Toast.LENGTH_SHORT).show();
-                contact();
-                break;
-
-            case R.id.exit:
-                Toast.makeText(getApplication(),"Exit",Toast.LENGTH_SHORT).show();
-                exit();
-                break;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-    public void exit()
-    {
-        AlertDialog.Builder b=new AlertDialog.Builder(this);
-        b.setMessage("Do you want to exit?")
-                .setCancelable(false)
-                .setPositiveButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                })
-                .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                if (e.trim().length() > 0 && p.trim().length() > 0) {
+                    DatabaseHandler db = new DatabaseHandler(getApplicationContext());
+                    if (db.verify(e, p)) {
+                        Intent i = new Intent(MainActivity.this, Welcome.class);
+                        startActivity(i);
                         finish();
+                    } else {
+                        Toast.makeText(getApplicationContext(), "Invalid Credentials", Toast.LENGTH_SHORT).show();
                     }
-                });
-        AlertDialog a= b.create();
-        a.setTitle("Confirm exit");
-        a.show();
-    }
-    public void contact()
-    {
-        AlertDialog.Builder b=new AlertDialog.Builder(this);
-        b.setMessage("here we can give our number/email or\nopen an activity providing our details.")
-                .setCancelable(true)
-                .setNegativeButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog a= b.create();
-        a.setTitle("Contact Us");
-        a.show();
-    }
-    public void onBackPressed()
-    {
-        exit();
-    }
-    public void loadCategory()
-    {
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item, c);
+                } else {
+                    if (e.trim().length() == 0)
+                        email.setError("Enter Email");
+                    else if (p.trim().length() == 0)
+                        pass.setError("Enter Password");
+                }
+            }
 
-        // Drop down layout style - list view with radio button
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        // attaching data adapter to spinner
-        category.setAdapter(dataAdapter);
-    }
-    public void loadLevel()
-    {
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,l);
-
-        // Drop down layout style - list view with radio button
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-        // attaching data adapter to spinner
-        level.setAdapter(dataAdapter);
-    }
-    public void cont()
-    {
-        AlertDialog.Builder b=new AlertDialog.Builder(this);
-        b.setMessage("Once started, you'll have only "+timelimit+" seconds to complete your quiz.")
-                .setCancelable(false)
-                .setPositiveButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                })
-                .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(getApplicationContext(), "Can't connect right now.", Toast.LENGTH_LONG).show();
-                    }
-                });
-        AlertDialog a= b.create();
-        a.setTitle("Start the quiz?");
-        a.show();
+        });
     }
 }
+
+
+
+
