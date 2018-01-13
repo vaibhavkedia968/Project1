@@ -87,6 +87,7 @@ public class Welcome extends AppCompatActivity {
         {
             case R.id.myprofile:
                 Toast.makeText(getApplication(),"My Profile",Toast.LENGTH_SHORT).show();
+                myProfile();
                 break;
 
             case R.id.signout:
@@ -112,6 +113,11 @@ public class Welcome extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    public void myProfile()
+    {
+        Intent i=new Intent(Welcome.this,ProfileActivity.class);
+        startActivity(i);
     }
     public void signout()
     {
