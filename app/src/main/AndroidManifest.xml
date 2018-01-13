@@ -19,10 +19,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".AboutActivity"></activity>
-        <activity android:name=".Register"
-            ></activity>
-        <activity android:name=".Welcome"></activity>
+        <activity
+            android:name=".AboutActivity"
+            android:label="About Us">
+        </activity>
+        <activity
+            android:name=".Register"
+            android:label="Create a new account">
+        </activity>
+        <activity
+            android:name=".Welcome"
+            android:label="QUIZ"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
 
     </application>
 

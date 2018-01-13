@@ -1,26 +1,19 @@
 package com.example.vaibhav.project1;
 
-/**
- * Created by SIVANGI on 12-01-2018.
- */
-
-import java.util.ArrayList;
-import java.util.List;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import android.widget.Toast;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "LoginAPP";
+    private static final String DATABASE_NAME = "LoginUser";
     private static final String TABLE_NAME = "user";
-    private static final String NAME = "Name";  //the value specified will be considered as table column name
-    private static final String EMAIL = "Email";
-    private static final String PHONE = "Phone";
+    private static final String NAME = "Name";
+    private static final String USERNAME = "Username";
     private static final String PASS = "Password";
 
     public DatabaseHandler(Context context) {
@@ -31,9 +24,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         // Category table create query
-        String CREATE_ITEM_TABLE = "CREATE TABLE " + TABLE_NAME + "("
-                + NAME + " TEXT," + EMAIL + " TEXT PRIMARY KEY," + PHONE + "TEXT," + PASS + " TEXT)";
-
+        String CREATE_ITEM_TABLE = "CREATE TABLE " + TABLE_NAME +"("
+                + NAME + " TEXT, " + USERNAME + " TEXT PRIMARY KEY, " + PASS + " TEXT)";
+        Log.d("Table creating : ",CREATE_ITEM_TABLE);
         db.execSQL(CREATE_ITEM_TABLE);
     }
 
@@ -46,54 +39,46 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // Create tables again
         onCreate(db);
     }
-
-
-    public boolean verify(String email, String pass) {
-
+    public int register(String nm,String unm,String pwd)
+    {
+        Log.d("REGISTERING ",unm);
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query="SELECT * FROM "+TABLE_NAME+" WHERE "+USERNAME+"='"+unm+"'";
+        Cursor c=db.rawQuery(query,null);
+        try {
+            if (c.moveToFirst()) {
+                c.close();
+                db.close();
+                return 0;
+            }
+        }catch(SQLException e) {
+            return 2;
+        }
+        ContentValues values = new ContentValues();
+        values.put(NAME, nm);
+        values.put(USERNAME, unm);
+        values.put(PASS, pwd);
+        db.insert(TABLE_NAME,null,values);
+        db.close();
+        Log.d("REGISTERED SUCCESSFULLY",unm);
+        return 1;
+    }
+    public boolean verify(String unm, String p) {
+        Log.d("VERIFYING ",unm);
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "Select * from " + TABLE_NAME + " where Email='" + email + "' and Password='" + pass + "'";
+        String query = "SELECT * FROM " + TABLE_NAME + " WHERE "+USERNAME+"='" + unm + "' AND "+PASS+"='" + p + "'";//
         Cursor c = db.rawQuery(query, null);
         try {
             if (c.moveToFirst()) {
-
-                Log.d("SName", c.getString(0));
-                Log.d("SEmail", c.getString(1));
-                Log.d("SPhone", c.getString(2));
-                Log.d("SPass", c.getString(3));
                 c.close();
                 db.close();
+                Log.d("VERIFIED ",unm);
                 return true;
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             return false;
         }
-     /*  else{
-            Log.d("Name",c.getString(0));
-            Log.d("Email",c.getString(1));
-            Log.d("Phone",c.getString(2));
-            Log.d("Pass",c.getString(3));
-            c.close();
-            db.close();
-            return false;
-        }*/
-
-
-        return true;
-    }
-
-    public int register(String nm, String em, String ph, String ps) {
-
-        SQLiteDatabase db = this.getWritableDatabase();
-        /*ContentValues values = new ContentValues();
-        values.put(NAME,nm);
-        values.put(EMAIL,em);
-        values.put(PHONE,ph);
-        values.put(PASS,ps);
-
-        db.insert(TABLE_NAME,null,values);*/
-        String query = "insert into " + TABLE_NAME + " values('" + nm + "','" + em + "','" + ph + "','" + ps + "')";
-        db.execSQL(query);
-        db.close();
-        return 1;
+        return false;
     }
 }
+

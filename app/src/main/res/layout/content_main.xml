@@ -6,16 +6,24 @@
     android:layout_height="match_parent"
 
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.vaibhav.project1.MainActivity"
-    tools:showIn="@layout/activity_main">
+    tools:context="com.example.vaibhav.project1.Welcome"
+    tools:showIn="@layout/welcome_xml">
 
+    <TextView
+        android:id="@+id/welcomeuser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="30dp"
+        android:text="WELCOME USER"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
     <Spinner
         android:id="@+id/category"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="37dp"
-        android:layout_alignParentTop="true"
+        android:layout_marginTop="43dp"
+        android:layout_below="@+id/welcomeuser"
         android:layout_alignParentStart="true" />
 
     <Button

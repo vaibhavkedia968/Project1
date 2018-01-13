@@ -13,26 +13,29 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
-/**
- * Created by SIVANGI on 12-01-2018.
- */
 
 public class Welcome extends AppCompatActivity {
     Spinner category;
     Button go;
     boolean cat;
+    TextView wu;
     int timelimit=60;
     String[] c={"Select your category","Aptitude","Science","Current Affairs"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.welcome_xml);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         category=(Spinner)findViewById(R.id.category);
         go=(Button)findViewById(R.id.cont);
+        wu=(TextView)findViewById(R.id.welcomeuser);
+        Bundle b=getIntent().getExtras();
+        wu.setText("WELCOME "+b.getString("username"));
+        MainActivity.currentuser=b.getString("username");
         loadCategory();
 
         category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -86,7 +89,10 @@ public class Welcome extends AppCompatActivity {
                 Toast.makeText(getApplication(),"My Profile",Toast.LENGTH_SHORT).show();
                 break;
 
-
+            case R.id.signout:
+                Toast.makeText(getApplication(),"Sign Out",Toast.LENGTH_SHORT).show();
+                signout();
+                break;
 
             case R.id.about:
                 Toast.makeText(getApplication(),"About",Toast.LENGTH_SHORT).show();
@@ -106,6 +112,30 @@ public class Welcome extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+    public void signout()
+    {
+        AlertDialog.Builder b=new AlertDialog.Builder(this);
+        b.setMessage("")
+                .setCancelable(false)
+                .setPositiveButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                })
+                .setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent j=new Intent(Welcome.this,MainActivity.class);
+                        MainActivity.currentuser="";
+                        startActivity(j);
+                        finish();
+                    }
+                });
+        AlertDialog a= b.create();
+        a.setTitle("Are you sure you want to sign out?");
+        a.show();
     }
     public void exit()
     {
